@@ -3,18 +3,19 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace MetaProject.Readers
+namespace MetaProject.Problem
 {
-    class FileReader
+    class ProblemData
     {
-        private int cities_number = 0;
-        private int items_number = 0;
-        private float min_speed;
-        private float max_speed;
-        private float[][] cities;
-        private int[][] items;
+        public int cities_number { get; private set; } = 0;
+        public int items_number { get; private set; } = 0;
+        public int capacity { get; private set; }
+        public float min_speed { get; private set; }
+        public float max_speed { get; private set; }
+        public float[][] cities { get; private set; }
+        public int[][] items { get; private set; }
         
-        public FileReader(string textFile)
+        public ProblemData(string textFile)
         {
             string[] lines = File.ReadAllLines(textFile);
             int cit = 0;
@@ -56,6 +57,10 @@ namespace MetaProject.Readers
                     it = items_number;
                     items = new int[items_number][];
                 }
+                else if (line.StartsWith("CAPACITY"))
+                {
+                    capacity = int.Parse(Regex.Match(line, @"\d+").Value);
+                }
                 else if (line.StartsWith("MIN"))
                 {
                     min_speed = float.Parse(Regex.Split(line, @"\s+")[2].Replace('.', ','));
@@ -71,6 +76,7 @@ namespace MetaProject.Readers
         {
             Console.WriteLine(cities_number);
             Console.WriteLine(items_number);
+            Console.WriteLine(capacity);
             Console.WriteLine(min_speed);
             Console.WriteLine(max_speed);
             
