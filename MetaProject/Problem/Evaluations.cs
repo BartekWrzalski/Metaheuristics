@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,27 +11,27 @@ namespace MetaProject.Problem
     {
         public static float speed = 1.0f;
         public static ProblemData data;
-        public static float road_lenght(Individual ind)
+        public static float RoadLength(Individual ind)
         {
-            float road = 0f;
-            for (int i = 0; i < ind._cities.Length - 1; i++)
+            float road = 0.0f;
+            for (int i = 0; i < ind.cities.Length; i++)
             {
-                road += speed * (float) Math.Sqrt(
-                            Math.Pow(data.cities[ind._cities[i] - 1][1] - data.cities[ind._cities[i + 1] - 1][1], 2)
-                            + Math.Pow(data.cities[ind._cities[i] - 1][2] - data.cities[ind._cities[i + 1] - 1][2], 2)
-                        );
+                if (i == 0)
+                {
+                    road += data.distances[ind.cities.Last() - 1][ind.cities.First() - 1];
+                }
+                else
+                {
+                    road += data.distances[ind.cities[i] - 1][ind.cities[i - 1] - 1];
+                }
             }
-            road += speed * (float) Math.Sqrt(
-                        Math.Pow(data.cities[ind._cities.Last()][1] - data.cities[ind._cities.First()][1], 2)
-                        + Math.Pow(data.cities[ind._cities.Last()][2] - data.cities[ind._cities.First()][2], 2)
-                    );
             return road;
         }
 
         public static int loot_value(Individual ind)
         {
             var value = 0;
-            foreach (int item_id in ind._items)
+            foreach (int item_id in ind.items)
             {
                 value += data.items[item_id - 1][1];
             }

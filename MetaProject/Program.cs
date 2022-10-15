@@ -1,6 +1,6 @@
 ﻿using MetaProject.Problem;
 using System;
-using System.Configuration;
+using System.Diagnostics;
 
 namespace MetaProject
 {
@@ -8,19 +8,27 @@ namespace MetaProject
     {
         static void Main(string[] args)
         {
-            ProblemData reader = new ProblemData("..\\..\\Data\\trivial_0.ttp");
-            Evaluations.data = reader;
-            RandomMethod._data = reader;
-            reader.printInfo();
-            //Console.WriteLine(ConfigurationManager.AppSettings.Get("Population"));
+            ProblemData problemData = new ProblemData("..\\..\\Data\\hard_0.ttp");
+            /*
+            problemData.printInfo();
+            Individual ind = RandomMethod.getRandomIndividual();
+            ind.print_cities_id();
+            float road = Evaluations.RoadLength(ind);
+            Console.WriteLine("Road " + road);
 
-            Individual one = RandomMethod.getRandomIndividual();
-            //Console.WriteLine(Evaluations.road_lenght(one));
-            Population p1 = new Population(new Individual[] {one});
+            ind = RandomMethod.getRandomIndividual();
+            ind.print_cities_id();
+            float road2 = Evaluations.RoadLength(ind);
+            
+            float diff = road2 - road;
+            Console.WriteLine(diff);
 
-            Json_files.save_population_to_file("..\\..\\Saved results\\pop.json", p1);
-
-            Json_files.save_individual_to_file("..\\..\\Saved results\\ind.json", p1.population[0]);
+            Individual ind3 = Greedy.getGreedyIndividual(1);
+            ind3.print_cities_id();
+            Console.WriteLine(Evaluations.RoadLength(ind3));
+            */
+            Population zero = new Population(1000);
+            Population final = TspHeuristics.GANextPopulation(zero);
         }
     }
 }

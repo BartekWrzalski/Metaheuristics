@@ -77,12 +77,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configs\Config.cs" />
+    <Compile Include="Problem\DeepCopyByExpressionTrees.cs" />
     <Compile Include="Problem\Evaluations.cs" />
+    <Compile Include="Problem\Greedy.cs" />
     <Compile Include="Problem\Individual.cs" />
     <Compile Include="Problem\Json_files.cs" />
+    <Compile Include="Problem\KnpHeuristics.cs" />
     <Compile Include="Problem\Population.cs" />
     <Compile Include="Problem\RandomMethod.cs" />
+    <Compile Include="Problem\TspHeuristics.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Problem\ProblemData.cs" />
