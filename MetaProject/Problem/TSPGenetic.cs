@@ -1,43 +1,73 @@
-﻿using DeepCopyExtensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 
 namespace MetaProject.Problem
 {
-    internal class TspHeuristics
+    internal class TSPGenetic
     {
         public static ProblemData data { get; set; }
         private static int population_size = int.Parse(ConfigurationManager.AppSettings.Get("Population"));
         private static int generations = int.Parse(ConfigurationManager.AppSettings.Get("Generations"));
-        private static float crossover_rate = float.Parse(ConfigurationManager.AppSettings.Get("Crossover_rate"));
-        private static float mutation_rate = float.Parse(ConfigurationManager.AppSettings.Get("Mutation_rate"));
-        private static float tour_size_per = float.Parse(ConfigurationManager.AppSettings.Get("Tour_size_per"));
+        private static int tour_size = int.Parse(ConfigurationManager.AppSettings.Get("Tour_size"));
         private static int roulette_power = int.Parse(ConfigurationManager.AppSettings.Get("Roulette_power"));
+        private static float crossover_rate = float.Parse(ConfigurationManager.AppSettings.Get("Crossover_rate"));
+        private static float mutation_rate_inverse = float.Parse(ConfigurationManager.AppSettings.Get("Mutation_rate_inverse"));
+        private static float mutation_rate_swap = float.Parse(ConfigurationManager.AppSettings.Get("Mutation_rate_swap"));
         private static Random random = new Random();
 
-        public static Population GANextPopulation(Population population)
+        public static Population GANextPopulation(Population population, out float[][] results, 
+            bool useTournament = true, 
+            bool use_ox_crossover = true, 
+            bool use_inverse_mutation = true)
         {
+            results = new float[generations][];
+            results[0] = new float[2] { population.GetBestInd(), population.GetWorstInd() };
             for (int i = 1; i < generations; i++)
             {
-                Console.WriteLine(population.GetBestInd() + " " + population.GetAvgInd());
+                Individual[] selected;
 
-                Individual[] selected = select_tournament(population);
-                population = ox_crossover(selected);
-                inverse_mutation(population);
+                if (useTournament)
+                {
+                    selected = select_tournament(population);
+                }
+                else
+                {
+                    selected = select_roulette(population);
+                }
+
+                if (use_ox_crossover)
+                {
+                    population = ox_crossover(selected);
+                }
+                else
+                {
+                    population = pmx_crossover(selected);
+                }
+
+                if (use_inverse_mutation)
+                {
+                    inverse_mutation(population);
+
+                }
+                else
+                {
+                    swap_mutation(population);
+                }
+                
+                results[i] = new float[2] { population.GetBestInd(), population.GetWorstInd() };
             }
             return population;
         }
 
         private static Individual[] select_tournament(Population population)
         {
-            int size = (int) (population_size * tour_size_per);
             Individual[] selected = new Individual[population_size];
             Individual best = null;
             for (int i = 0; i < population_size; i++)
             {
-                for (int j = 0; j < size; j++)
+                for (int j = 0; j < tour_size; j++)
                 {
                     var ind = population.population[random.Next(0, population_size)];
                     if (best is null || best.fitness > ind.fitness)
@@ -83,8 +113,6 @@ namespace MetaProject.Problem
             {
                 if (random.NextDouble() > crossover_rate)
                 {
-                    // possibly is faster vvv
-                    // var copied_parent = selected[random.Next(0, population_size)].DeepCopyByExpressionTree();
                     Individual copied_parent = new Individual(selected[random.Next(0, population_size)]);
                     new_population[i] = copied_parent;
                     copied_parent = new Individual(selected[random.Next(0, population_size)]);
@@ -129,8 +157,6 @@ namespace MetaProject.Problem
             {
                 if (random.NextDouble() > crossover_rate)
                 {
-                    // possibly is faster vvv
-                    // var copied_parent = selected[random.Next(0, population_size)].DeepCopyByExpressionTree();
                     Individual copied_parent = new Individual(selected[random.Next(0, population_size)]);
                     new_population[i] = copied_parent;
                     continue;
@@ -152,17 +178,6 @@ namespace MetaProject.Problem
 
                 for (int j = 0; j < parent1.Length; j++)
                 {
-/*                    foreach (int a in sub_parent1)
-                    {
-                        Console.Write(a + " ");
-                    }
-                    Console.WriteLine();
-                    foreach (int a in sub_parent2)
-                    {
-                        Console.Write(a + " ");
-                    }
-                    Console.WriteLine();
-*/
                     new_cities[j] = j > end || j < start ? sub_parent2.Dequeue() : sub_parent1.Dequeue();
                 }
                 new_population[i] = new Individual(new_cities, data.capacity);
@@ -174,7 +189,7 @@ namespace MetaProject.Problem
         {
             foreach (Individual ind in population.population)
             {
-                if (random.NextDouble() > mutation_rate)
+                if (random.NextDouble() > mutation_rate_swap)
                 {
                     ind.SetFitness();
                     continue;
@@ -195,7 +210,7 @@ namespace MetaProject.Problem
         {
             foreach (Individual ind in population.population)
             {
-                if (random.NextDouble() > mutation_rate)
+                if (random.NextDouble() > mutation_rate_inverse)
                 {
                     ind.SetFitness();
                     continue;

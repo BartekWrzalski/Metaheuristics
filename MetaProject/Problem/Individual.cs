@@ -8,15 +8,15 @@ namespace MetaProject.Problem
 {
     internal class Individual
     {
-        public int capacity { get; private set; }
-        public int[] cities { get; private set; }
-        public int[] items { get; private set; }
-        public float fitness;
+        public float capacity { get; set; }
+        public int[] cities { get; set; }
+        public float[] speeds { get; set; }
+        public int[] items { get; set; }
+        public float fitness { get; private set; }
 
-        public Individual(int[] cities, int capacity)
+        public Individual(int[] cities, float capacity)
         {
             this.cities = cities;
-            this.items = new int[] { };
             this.capacity = capacity;
         }
 
@@ -32,7 +32,9 @@ namespace MetaProject.Problem
 
         public void SetFitness()
         {
+            KNPGreedy.GreedySteal(this);
             fitness = Evaluations.RoadLength(this);
+            //Console.WriteLine(capacity + "  " + Evaluations.loot_value(this));
         }
 
         public void print_cities_id()

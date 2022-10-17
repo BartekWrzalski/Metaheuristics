@@ -77,15 +77,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Problem\DeepCopyByExpressionTrees.cs" />
     <Compile Include="Problem\Evaluations.cs" />
-    <Compile Include="Problem\Greedy.cs" />
+    <Compile Include="Problem\TSPGreedy.cs" />
     <Compile Include="Problem\Individual.cs" />
     <Compile Include="Problem\Json_files.cs" />
-    <Compile Include="Problem\KnpHeuristics.cs" />
+    <Compile Include="Problem\KNPGreedy.cs" />
     <Compile Include="Problem\Population.cs" />
     <Compile Include="Problem\RandomMethod.cs" />
-    <Compile Include="Problem\TspHeuristics.cs" />
+    <Compile Include="Problem\TSPGenetic.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Problem\ProblemData.cs" />
@@ -110,11 +109,38 @@
     <None Include="Data\trivial_0.ttp" />
     <None Include="Data\trivial_1.ttp" />
     <None Include="packages.config" />
+    <None Include="Results\visualisation.csv" />
     <None Include="Saved results\ind.json" />
     <None Include="Saved results\pop.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Logs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Results\genetic_easy_0_crossover_ox.txt" />
+    <Content Include="Results\genetic_easy_0_crossover_ox_rate_05.txt" />
+    <Content Include="Results\genetic_easy_0_crossover_ox_rate_08.txt" />
+    <Content Include="Results\genetic_easy_0_crossover_pmx.txt" />
+    <Content Include="Results\genetic_easy_0_crossover_pmx_rate_05.txt" />
+    <Content Include="Results\genetic_easy_0_crossover_pmx_rate_08.txt" />
+    <Content Include="Results\genetic_easy_0_mutation_inverse.txt" />
+    <Content Include="Results\genetic_easy_0_mutation_inverse_02.txt" />
+    <Content Include="Results\genetic_easy_0_mutation_swap.txt" />
+    <Content Include="Results\genetic_easy_0_mutation_swap_005.txt" />
+    <Content Include="Results\genetic_easy_0_selection_roulette.txt" />
+    <Content Include="Results\genetic_easy_0_selection_roulette_5.txt" />
+    <Content Include="Results\genetic_easy_0_selection_tournament.txt" />
+    <Content Include="Results\genetic_easy_0_selection_tournament_10.txt" />
+    <Content Include="Results\greedy_easy_0.txt" />
+    <Content Include="Results\greedy_easy_1.txt" />
+    <Content Include="Results\greedy_easy_2.txt" />
+    <Content Include="Results\greedy_easy_3.txt" />
+    <Content Include="Results\greedy_easy_4.txt" />
+    <Content Include="Results\random_easy_0.txt" />
+    <Content Include="Results\random_easy_1.txt" />
+    <Content Include="Results\random_easy_2.txt" />
+    <Content Include="Results\random_easy_3.txt" />
+    <Content Include="Results\random_easy_4.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Text.Json.6.0.6\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.6\build\System.Text.Json.targets')" />

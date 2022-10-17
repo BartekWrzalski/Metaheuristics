@@ -9,7 +9,7 @@ namespace MetaProject.Problem
     {
         public int cities_number { get; private set; } = 0;
         public int items_number { get; private set; } = 0;
-        public int capacity { get; private set; }
+        public float capacity { get; private set; }
         public float min_speed { get; private set; }
         public float max_speed { get; private set; }
         public float[][] cities { get; private set; }
@@ -60,7 +60,7 @@ namespace MetaProject.Problem
                 }
                 else if (line.StartsWith("CAPACITY"))
                 {
-                    capacity = int.Parse(Regex.Match(line, @"\d+").Value);
+                    capacity = float.Parse(Regex.Match(line, @"\d+").Value);
                 }
                 else if (line.StartsWith("MIN"))
                 {
@@ -80,9 +80,9 @@ namespace MetaProject.Problem
         {
             Evaluations.data = this;
             RandomMethod.data = this;
-            Greedy.data = this;
-            KnpHeuristics.data = this;
-            TspHeuristics.data = this;
+            TSPGreedy.data = this;
+            KNPGreedy.data = this;
+            TSPGenetic.data = this;
         }
 
         private void CalculateDistances()
@@ -115,7 +115,7 @@ namespace MetaProject.Problem
             Console.WriteLine(min_speed);
             Console.WriteLine(max_speed);
             
-            foreach (float[] city in cities)
+/*            foreach (float[] city in cities)
             {
                 Console.WriteLine(city[0] + " " + city[1] + " " + city[2]);
             }
@@ -131,7 +131,7 @@ namespace MetaProject.Problem
                     Console.Write(String.Format("{0,8:#####.00} ", distance));
                 }
                 Console.WriteLine();
-            }
+            }*/
         }
     }
 }

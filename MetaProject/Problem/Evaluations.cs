@@ -16,13 +16,13 @@ namespace MetaProject.Problem
             float road = 0.0f;
             for (int i = 0; i < ind.cities.Length; i++)
             {
-                if (i == 0)
+                if (i == ind.cities.Length - 1)
                 {
-                    road += data.distances[ind.cities.Last() - 1][ind.cities.First() - 1];
+                    road += data.distances[ind.cities.Last() - 1][ind.cities.First() - 1] / ind.speeds[i];
                 }
                 else
                 {
-                    road += data.distances[ind.cities[i] - 1][ind.cities[i - 1] - 1];
+                    road += data.distances[ind.cities[i] - 1][ind.cities[i + 1] - 1] / ind.speeds[i];
                 }
             }
             return road;
