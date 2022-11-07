@@ -9,28 +9,26 @@ namespace MetaProject.Problem
 {
     internal class Evaluations
     {
-        public static float speed = 1.0f;
+        public static double speed = 1.0;
         public static ProblemData data;
-        public static float RoadLength(Individual ind)
+        public static double RoadLength(Individual ind)
         {
-            float road = 0.0f;
-            for (int i = 0; i < ind.cities.Length; i++)
-            {
-                if (i == ind.cities.Length - 1)
-                {
-                    road += data.distances[ind.cities.Last() - 1][ind.cities.First() - 1] / ind.speeds[i];
-                }
-                else
-                {
-                    road += data.distances[ind.cities[i] - 1][ind.cities[i + 1] - 1] / ind.speeds[i];
-                }
+            double road = 0.0f;
+            for (int i = 0; i < ind.cities.Length - 1; i++)
+            {   
+                road += data.distances[ind.cities[i] - 1][ind.cities[i + 1] - 1] /
+                    (data.min_speed + ind.weights[i] / data.capacity * data.speed_diff);
             }
+
+            road += data.distances[ind.cities.Last() - 1][ind.cities.First() - 1] /
+                (data.min_speed + ind.weights.Last() / data.capacity * data.speed_diff);
+            
             return road;
         }
 
-        public static int loot_value(Individual ind)
+        public static double loot_value(Individual ind)
         {
-            var value = 0;
+            double value = 0;
             foreach (int item_id in ind.items)
             {
                 value += data.items[item_id - 1][1];

@@ -12,18 +12,34 @@ namespace MetaProject.Problem
 
         public static Individual getGreedyIndividual(int starting_city)
         {
+            List<int> cities_left = new List<int>();
+            for (int i = 0; i < data.cities_number; i++)
+            {
+                cities_left.Add(i);
+            }
+            cities_left.Remove(starting_city - 1);
+
             int[] cities = new int[data.cities_number];
             cities[0] = starting_city;
 
             for (int i = 1; i < data.cities_number; i++)
             {
-                float min_dist = data.distances[cities[i - 1] - 1].Where((distance, city) => !cities.Any(c => c == city + 1)).Min();
-                int new_city = data.distances[cities[i - 1] - 1].Select((distance, city) => new { city, distance }).Where(pair => pair.distance == min_dist).Select(pair => pair.city + 1).First();
-                //Console.WriteLine(cities[i - 1] + " " + min_dist + " " + new_city);
-                cities[i] = new_city;
+                double min_dist = double.MaxValue;
+                int next_city = 0;
+                foreach (int city in cities_left)
+                {
+                    if (data.distances[cities[i - 1] - 1][city] < min_dist)
+                    {
+                        min_dist = data.distances[cities[i - 1] - 1][city];
+                        next_city = city;
+                    }
+                }
+                cities_left.Remove(next_city);
+                cities[i] = next_city + 1;
             }
             Individual ind = new Individual(cities, data.capacity);
             ind.SetFitness();
+            //Console.WriteLine(ind.fitness);
             return ind;
         }
     }

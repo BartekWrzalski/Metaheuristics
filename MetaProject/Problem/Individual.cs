@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace MetaProject.Problem
 {
-    internal class Individual
+    internal class Individual : IEquatable<Individual>
     {
-        public float capacity { get; set; }
+        public double capacity { get; set; }
+        public double[] weights { get; set; }
         public int[] cities { get; set; }
-        public float[] speeds { get; set; }
         public int[] items { get; set; }
-        public float fitness { get; private set; }
+        public double fitness { get; private set; } = double.NaN;
 
-        public Individual(int[] cities, float capacity)
+        public Individual(int[] cities, double capacity)
         {
             this.cities = cities;
             this.capacity = capacity;
@@ -28,12 +28,18 @@ namespace MetaProject.Problem
             {
                 cities[i] = ind.cities[i];
             }
+            fitness = ind.fitness;
         }
 
         public void SetFitness()
         {
             KNPGreedy.GreedySteal(this);
-            fitness = Evaluations.RoadLength(this);
+            var looted = Evaluations.loot_value(this);
+            var road = Evaluations.RoadLength(this);
+            //Console.WriteLine(road);
+            //print_cities_id();
+            // Console.WriteLine(looted + " " + capacity);
+            fitness = looted - road;
             //Console.WriteLine(capacity + "  " + Evaluations.loot_value(this));
         }
 
@@ -53,6 +59,11 @@ namespace MetaProject.Problem
                 Console.Write(item + " ");
             }
             Console.WriteLine();
+        }
+
+        public bool Equals(Individual other)
+        {
+            return cities.SequenceEqual(other.cities);
         }
     }
 }

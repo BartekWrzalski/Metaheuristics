@@ -80,11 +80,12 @@
     <Compile Include="Problem\Evaluations.cs" />
     <Compile Include="Problem\TSPGreedy.cs" />
     <Compile Include="Problem\Individual.cs" />
-    <Compile Include="Problem\Json_files.cs" />
     <Compile Include="Problem\KNPGreedy.cs" />
     <Compile Include="Problem\Population.cs" />
     <Compile Include="Problem\RandomMethod.cs" />
     <Compile Include="Problem\TSPGenetic.cs" />
+    <Compile Include="Problem\TSPSimulatedAnnealing.cs" />
+    <Compile Include="Problem\TSPTabuSeach.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Problem\ProblemData.cs" />
@@ -110,6 +111,8 @@
     <None Include="Data\trivial_1.ttp" />
     <None Include="packages.config" />
     <None Include="Results\visualisation.csv" />
+    <None Include="Results\visualisation_aneealing.xlsx" />
+    <None Include="Results\visualisation_tabu.xlsx" />
     <None Include="Saved results\ind.json" />
     <None Include="Saved results\pop.json" />
   </ItemGroup>
@@ -117,6 +120,7 @@
     <Folder Include="Logs\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Results\genetic_easy_0_.txt" />
     <Content Include="Results\genetic_easy_0_crossover_ox.txt" />
     <Content Include="Results\genetic_easy_0_crossover_ox_rate_05.txt" />
     <Content Include="Results\genetic_easy_0_crossover_ox_rate_08.txt" />
@@ -124,23 +128,54 @@
     <Content Include="Results\genetic_easy_0_crossover_pmx_rate_05.txt" />
     <Content Include="Results\genetic_easy_0_crossover_pmx_rate_08.txt" />
     <Content Include="Results\genetic_easy_0_mutation_inverse.txt" />
-    <Content Include="Results\genetic_easy_0_mutation_inverse_02.txt" />
+    <Content Include="Results\genetic_easy_0_mutation_inverse_015.txt" />
     <Content Include="Results\genetic_easy_0_mutation_swap.txt" />
-    <Content Include="Results\genetic_easy_0_mutation_swap_005.txt" />
+    <Content Include="Results\genetic_easy_0_mutation_swap_003.txt" />
     <Content Include="Results\genetic_easy_0_selection_roulette.txt" />
     <Content Include="Results\genetic_easy_0_selection_roulette_5.txt" />
     <Content Include="Results\genetic_easy_0_selection_tournament.txt" />
     <Content Include="Results\genetic_easy_0_selection_tournament_10.txt" />
+    <Content Include="Results\genetic_easy_0_size_2k_gen_500.txt" />
+    <Content Include="Results\genetic_easy_1_.txt" />
+    <Content Include="Results\genetic_easy_2_.txt" />
+    <Content Include="Results\genetic_easy_3_.txt" />
+    <Content Include="Results\genetic_easy_4_.txt" />
     <Content Include="Results\greedy_easy_0.txt" />
     <Content Include="Results\greedy_easy_1.txt" />
     <Content Include="Results\greedy_easy_2.txt" />
     <Content Include="Results\greedy_easy_3.txt" />
     <Content Include="Results\greedy_easy_4.txt" />
+    <Content Include="Results\greedy_hard_4.txt" />
     <Content Include="Results\random_easy_0.txt" />
     <Content Include="Results\random_easy_1.txt" />
     <Content Include="Results\random_easy_2.txt" />
     <Content Include="Results\random_easy_3.txt" />
     <Content Include="Results\random_easy_4.txt" />
+    <Content Include="Results\simann_hard_4_20k_gen_50k_9997.txt" />
+    <Content Include="Results\simann_hard_4_20k_gen_greedy_50k_9997.txt" />
+    <Content Include="Results\simann_hard_4_inverse_20k_99945.txt" />
+    <Content Include="Results\simann_hard_4_inverse_30k_99945.txt" />
+    <Content Include="Results\simann_hard_4_inverse_30k_9997.txt" />
+    <Content Include="Results\simann_hard_4_inverse_50k_99945.txt" />
+    <Content Include="Results\simann_hard_4_inverse_50k_9997.txt" />
+    <Content Include="Results\simann_hard_4_inverse_greedy_20k_99945.txt" />
+    <Content Include="Results\simann_hard_4_inverse_greedy_30k_99945.txt" />
+    <Content Include="Results\simann_hard_4_inverse_greedy_30k_9997.txt" />
+    <Content Include="Results\simann_hard_4_inverse_greedy_50k_99945.txt" />
+    <Content Include="Results\simann_hard_4_inverse_greedy_50k_9997.txt" />
+    <Content Include="Results\tabu_easy_4_greedy_All_Inverse.txt" />
+    <Content Include="Results\tabu_easy_4_greedy_All_Swap.txt" />
+    <Content Include="Results\tabu_easy_4_greedy_One_Inverse.txt" />
+    <Content Include="Results\tabu_easy_4_greedy_One_Swap.txt" />
+    <Content Include="Results\tabu_easy_4_random_All_Inverse.txt" />
+    <Content Include="Results\tabu_easy_4_random_All_Swap.txt" />
+    <Content Include="Results\tabu_easy_4_random_One_Inverse.txt" />
+    <Content Include="Results\tabu_easy_4_random_One_Swap.txt" />
+    <Content Include="Results\tabu_hard_4_1000_100_10_one.txt" />
+    <Content Include="Results\tabu_hard_4_1000_100_50_one.txt" />
+    <Content Include="Results\tabu_hard_4_1000_200_10_one.txt" />
+    <Content Include="Results\tabu_hard_4_2000_100_10_one.txt" />
+    <Content Include="Results\tabu_hard_4_2000_400_50_one.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Text.Json.6.0.6\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.6\build\System.Text.Json.targets')" />

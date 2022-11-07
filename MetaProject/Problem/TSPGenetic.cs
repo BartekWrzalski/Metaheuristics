@@ -10,20 +10,20 @@ namespace MetaProject.Problem
         public static ProblemData data { get; set; }
         private static int population_size = int.Parse(ConfigurationManager.AppSettings.Get("Population"));
         private static int generations = int.Parse(ConfigurationManager.AppSettings.Get("Generations"));
-        private static int tour_size = int.Parse(ConfigurationManager.AppSettings.Get("Tour_size"));
+        private static int tour_size = int.Parse(ConfigurationManager.AppSettings.Get("Tour_size_per")) * population_size / 100;
         private static int roulette_power = int.Parse(ConfigurationManager.AppSettings.Get("Roulette_power"));
-        private static float crossover_rate = float.Parse(ConfigurationManager.AppSettings.Get("Crossover_rate"));
-        private static float mutation_rate_inverse = float.Parse(ConfigurationManager.AppSettings.Get("Mutation_rate_inverse"));
-        private static float mutation_rate_swap = float.Parse(ConfigurationManager.AppSettings.Get("Mutation_rate_swap"));
+        private static double crossover_rate = double.Parse(ConfigurationManager.AppSettings.Get("Crossover_rate"));
+        private static double mutation_rate_inverse = double.Parse(ConfigurationManager.AppSettings.Get("Mutation_rate_inverse"));
+        private static double mutation_rate_swap = double.Parse(ConfigurationManager.AppSettings.Get("Mutation_rate_swap"));
         private static Random random = new Random();
 
-        public static Population GANextPopulation(Population population, out float[][] results, 
+        public static Population GANextPopulation(Population population, out double[][] results, 
             bool useTournament = true, 
             bool use_ox_crossover = true, 
             bool use_inverse_mutation = true)
         {
-            results = new float[generations][];
-            results[0] = new float[2] { population.GetBestInd(), population.GetWorstInd() };
+            results = new double[generations][];
+            results[0] = new double[2] { population.GetBestInd(), population.GetWorstInd() };
             for (int i = 1; i < generations; i++)
             {
                 Individual[] selected;
@@ -56,7 +56,7 @@ namespace MetaProject.Problem
                     swap_mutation(population);
                 }
                 
-                results[i] = new float[2] { population.GetBestInd(), population.GetWorstInd() };
+                results[i] = new double[2] { population.GetBestInd(), population.GetWorstInd() };
             }
             return population;
         }
@@ -64,19 +64,18 @@ namespace MetaProject.Problem
         private static Individual[] select_tournament(Population population)
         {
             Individual[] selected = new Individual[population_size];
-            Individual best = null;
             for (int i = 0; i < population_size; i++)
             {
-                for (int j = 0; j < tour_size; j++)
+                var best = population.population[random.Next(0, population_size)];
+                for (int j = 1; j < tour_size; j++)
                 {
-                    var ind = population.population[random.Next(0, population_size)];
-                    if (best is null || best.fitness > ind.fitness)
+                    int idx = random.Next(0, population_size);
+                    if (best.fitness < population.population[idx].fitness)
                     {
-                        best = ind;
+                        best = population.population[idx];
                     }
                 }
                 selected[i] = best;
-                best = null;
             }
 
             return selected;
@@ -85,10 +84,14 @@ namespace MetaProject.Problem
         private static Individual[] select_roulette(Population population)
         {
             Individual[] selected = new Individual[population_size];
+            double worst = population.GetWorstInd();
 
-            double[] probs = population.population.Select(c => 1f / Math.Pow(c.fitness, roulette_power)).ToArray();
-
-            probs = Enumerable.Range(0, probs.Length).Select(a => a == 0 ? probs[a] : probs[a] += probs[a - 1]).ToArray();
+            double[] probs = new double[population_size];
+            probs[0] = Math.Pow(population.population[0].fitness - worst, roulette_power);
+            for (int i = 1; i < population_size; i++)
+            {
+                probs[i] = Math.Pow(population.population[i].fitness - worst, roulette_power) + probs[i - 1];
+            }
 
             for (int i = 0; i < population_size; i++)
             {
@@ -120,25 +123,22 @@ namespace MetaProject.Problem
                     continue;
                 }
 
-                int[] parent1 = selected[random.Next(0, population_size)].cities;
-                int[] parent2 = selected[random.Next(0, population_size)].cities;
+                int[] child_1_cities = selected[random.Next(0, population_size)].cities.Clone() as int[];
+                int[] child_2_cities = selected[random.Next(0, population_size)].cities.Clone() as int[];
 
-                int n1 = random.Next(0, parent1.Length);
-                int n2 = random.Next(0, parent1.Length);
+                int n1 = random.Next(0, child_1_cities.Length - 1);
+                int n2 = random.Next(0, child_2_cities.Length);
 
                 int start = Math.Min(n1, n2);
                 int end = Math.Max(n1, n2);
-
-                int[] child_1_cities = parent1.Clone() as int[];
-                int[] child_2_cities = parent2.Clone() as int[];
 
                 for (int j = start; j < end + 1; j++)
                 {
                     int c1 = child_1_cities[j];
                     int c2 = child_2_cities[j];
 
-                    child_1_cities[child_1_cities.Select((city, index) => new { city, index }).Where(pair => pair.city == c2).Select(pair => pair.index).First()] = c1;
-                    child_2_cities[child_2_cities.Select((city, index) => new { city, index }).Where(pair => pair.city == c1).Select(pair => pair.index).First()] = c2;
+                    child_1_cities[Array.IndexOf(child_1_cities, c2)] = c1;
+                    child_2_cities[Array.IndexOf(child_2_cities, c1)] = c2;
 
                     child_1_cities[j] = c2;
                     child_2_cities[j] = c1;
@@ -171,14 +171,22 @@ namespace MetaProject.Problem
                 int start = Math.Min(n1, n2);
                 int end = Math.Max(n1, n2);
 
-                Queue<int> sub_parent1 = new Queue<int>(new ArraySegment<int>(parent1, start, end - start + 1));
-                Queue<int> sub_parent2 = new Queue<int>(parent2.Where(x => !sub_parent1.Contains(x)));
-
                 int[] new_cities = new int[parent1.Length];
-
-                for (int j = 0; j < parent1.Length; j++)
+                List<int> sub_parent2 = new List<int>(parent2);
+                
+                for (int j = start; j < end + 1; j++)
                 {
-                    new_cities[j] = j > end || j < start ? sub_parent2.Dequeue() : sub_parent1.Dequeue();
+                    new_cities[j] = parent1[j];
+                    sub_parent2.RemoveAt(sub_parent2.IndexOf(parent1[j]));
+                }
+                
+                for (int j = 0; j < start; j++)
+                {
+                    new_cities[j] = sub_parent2[j];
+                }
+                for (int j = start; j < sub_parent2.Count; j++)
+                {
+                    new_cities[j - start + end + 1] = sub_parent2[j];
                 }
                 new_population[i] = new Individual(new_cities, data.capacity);
             }
@@ -191,7 +199,10 @@ namespace MetaProject.Problem
             {
                 if (random.NextDouble() > mutation_rate_swap)
                 {
-                    ind.SetFitness();
+                    if (ind.fitness is double.NaN)
+                    {
+                        ind.SetFitness();
+                    }
                     continue;
                 }
 
@@ -212,7 +223,10 @@ namespace MetaProject.Problem
             {
                 if (random.NextDouble() > mutation_rate_inverse)
                 {
-                    ind.SetFitness();
+                    if (ind.fitness is double.NaN)
+                    {
+                        ind.SetFitness();
+                    }
                     continue;
                 }
 

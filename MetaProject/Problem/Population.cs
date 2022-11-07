@@ -27,18 +27,29 @@ namespace MetaProject.Problem
             }
         }
 
-        public float GetBestInd()
-        {
-            return population.Select(i => i.fitness).Min();
-        }
-        public float GetWorstInd()
+        public double GetBestInd()
         {
             return population.Select(i => i.fitness).Max();
         }
+        public double GetWorstInd()
+        {
+            return population.Select(i => i.fitness).Min();
+        }
 
-        public float GetAvgInd()
+        public double GetAvgInd()
         {
             return population.Select(i => i.fitness).Average();
+        }
+
+        public void print_best()
+        {
+            Individual ind = population.Where(i => i.fitness == GetBestInd()).Select(i => i).First();
+
+            Console.WriteLine(ind.capacity);
+            Console.WriteLine(Evaluations.loot_value(ind));
+            Console.WriteLine(Evaluations.RoadLength(ind));
+            ind.print_cities_id();
+            ind.print_items_id();
         }
 
         public void print_population()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -9,12 +10,14 @@ namespace MetaProject.Problem
     {
         public int cities_number { get; private set; } = 0;
         public int items_number { get; private set; } = 0;
-        public float capacity { get; private set; }
-        public float min_speed { get; private set; }
-        public float max_speed { get; private set; }
-        public float[][] cities { get; private set; }
+        public double capacity { get; private set; }
+        public double min_speed { get; private set; }
+        public double max_speed { get; private set; }
+        public double speed_diff { get; private set; }
+        public double[][] cities { get; private set; }
         public int[][] items { get; private set; }
-        public float[][] distances { get; private set; }
+        public Dictionary<int, List<int>> cities_wth_items { get; private set; }
+        public double[][] distances { get; private set; }
         
         public ProblemData(string textFile)
         {
@@ -27,7 +30,8 @@ namespace MetaProject.Problem
                 if (cit != cities_number)
                 {
                     string[] str_vals = Regex.Split(line, @"\s+");
-                    float[] vals = str_vals.Select(s => float.Parse(s.Replace('.', ','))).ToArray();
+                    double[] vals = str_vals.Select(s => double.Parse(s.Replace('.', ','))).ToArray();
+                    
                     cities[cit] = vals;
                     cit++;
                 }
@@ -36,6 +40,7 @@ namespace MetaProject.Problem
                     string[] str_vals = Regex.Split(line, @"\s+");
                     int[] vals = str_vals.Select(s => int.Parse(s.Replace('.', ','))).ToArray();
                     items[it] = vals;
+                    cities_wth_items[vals[3]].Add(vals[0]);
                     it++;
                 }
                 else if (line.StartsWith("NODE_"))
@@ -50,7 +55,12 @@ namespace MetaProject.Problem
                 {
                     cities_number = int.Parse(Regex.Match(line, @"\d+").Value);
                     cit = cities_number;
-                    cities = new float[cities_number][];
+                    cities = new double[cities_number][];
+                    cities_wth_items = new Dictionary<int, List<int>>();
+                    for (int i = 0; i < cities_number; i++)
+                    {
+                        cities_wth_items.Add(i + 1, new List<int>());
+                    }
                 }
                 else if (line.StartsWith("NUMBER OF"))
                 {
@@ -60,18 +70,18 @@ namespace MetaProject.Problem
                 }
                 else if (line.StartsWith("CAPACITY"))
                 {
-                    capacity = float.Parse(Regex.Match(line, @"\d+").Value);
+                    capacity = double.Parse(Regex.Match(line, @"\d+").Value);
                 }
                 else if (line.StartsWith("MIN"))
                 {
-                    min_speed = float.Parse(Regex.Split(line, @"\s+")[2].Replace('.', ','));
+                    min_speed = double.Parse(Regex.Split(line, @"\s+")[2].Replace('.', ','));
                 }
                 else if (line.StartsWith("MAX"))
                 {
-                    max_speed = float.Parse(Regex.Split(line, @"\s+")[2].Replace('.', ','));
+                    max_speed = double.Parse(Regex.Split(line, @"\s+")[2].Replace('.', ','));
                 }
             }
-
+            speed_diff = max_speed - min_speed;
             CalculateDistances();
             setData();
         }
@@ -87,19 +97,19 @@ namespace MetaProject.Problem
 
         private void CalculateDistances()
         {
-            distances = new float[cities_number][];
+            distances = new double[cities_number][];
 
             for (int i = 0; i < cities_number; i++)
             {
-                distances[i] = new float[cities_number];
+                distances[i] = new double[cities_number];
                 for (int j = 0; j < cities_number; j++)
                 {
                     if (i == j)
                     {
-                        distances[i][j] = float.MaxValue;
+                        distances[i][j] = double.MaxValue;
                         continue;
                     }
-                    distances[i][j] = (float) Math.Sqrt(
+                    distances[i][j] = Math.Sqrt(
                         Math.Pow(cities[i][1] - cities[j][1], 2)
                         + Math.Pow(cities[i][2] - cities[j][2], 2)
                     );
@@ -123,15 +133,15 @@ namespace MetaProject.Problem
             {
                 Console.WriteLine(item[0] + " " + item[1] + " " + item[2] + " " + item[3]);
             }
-
-            foreach (float[] line in distances)
+*/
+            foreach (double[] line in distances)
             {
-                foreach (float distance in line)
+                foreach (double distance in line)
                 {
                     Console.Write(String.Format("{0,8:#####.00} ", distance));
                 }
                 Console.WriteLine();
-            }*/
+            }
         }
     }
 }
