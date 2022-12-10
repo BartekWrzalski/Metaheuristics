@@ -9,7 +9,7 @@ namespace MetaProject.Problem
     internal class Individual : IEquatable<Individual>
     {
         public double capacity { get; set; }
-        public double[] weights { get; set; }
+        public double[] speeds { get; set; }
         public int[] cities { get; set; }
         public int[] items { get; set; }
         public double fitness { get; private set; } = double.NaN;
@@ -33,6 +33,7 @@ namespace MetaProject.Problem
 
         public void SetFitness()
         {
+            // capacity reseted in GreedySteal
             KNPGreedy.GreedySteal(this);
             var looted = Evaluations.loot_value(this);
             var road = Evaluations.RoadLength(this);

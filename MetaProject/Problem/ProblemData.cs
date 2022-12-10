@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -8,6 +9,9 @@ namespace MetaProject.Problem
 {
     class ProblemData
     {
+        public double profit_treshold_1 = 0.5;
+        public double profit_treshold_2 = 0.25;
+
         public int cities_number { get; private set; } = 0;
         public int items_number { get; private set; } = 0;
         public double capacity { get; private set; }
@@ -18,6 +22,7 @@ namespace MetaProject.Problem
         public int[][] items { get; private set; }
         public Dictionary<int, List<int>> cities_wth_items { get; private set; }
         public double[][] distances { get; private set; }
+        public bool[][] profits { get; private set; }
         
         public ProblemData(string textFile)
         {
@@ -83,6 +88,7 @@ namespace MetaProject.Problem
             }
             speed_diff = max_speed - min_speed;
             CalculateDistances();
+            CalculateProfits();
             setData();
         }
 
@@ -117,6 +123,30 @@ namespace MetaProject.Problem
             }
         }
 
+        private void CalculateProfits()
+        {
+            profits = new bool[items_number][];
+            if (items[0][1] > items[0][2])
+            {
+                for (int i = 0; i < items_number; i++)
+                {
+                    profits[i] = new bool[2];
+                    profits[i][0] = (double)items[i][2] / items[i][1] < 1 - profit_treshold_1;
+                    profits[i][1] = (double)items[i][2] / items[i][1] < 1 - profit_treshold_2;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < items_number; i++)
+                {
+                    profits[i] = new bool[2];
+                    profits[i][0] = (double)items[i][1] / items[i][2] > profit_treshold_1;
+                    profits[i][1] = (double)items[i][1] / items[i][2] > profit_treshold_2;
+                }
+            }
+
+        }
+
         public void printInfo()
         {
             Console.WriteLine(cities_number);
@@ -134,11 +164,11 @@ namespace MetaProject.Problem
                 Console.WriteLine(item[0] + " " + item[1] + " " + item[2] + " " + item[3]);
             }
 */
-            foreach (double[] line in distances)
+            foreach (bool[] line in profits)
             {
-                foreach (double distance in line)
+                foreach (bool distance in line)
                 {
-                    Console.Write(String.Format("{0,8:#####.00} ", distance));
+                    Console.Write(distance + " ");
                 }
                 Console.WriteLine();
             }

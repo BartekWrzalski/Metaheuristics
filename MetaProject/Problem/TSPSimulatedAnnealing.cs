@@ -9,26 +9,25 @@ namespace MetaProject.Problem
 {
     internal class TSPSimulatedAnnealing
     {
-        private static int generations = int.Parse(ConfigurationManager.AppSettings.Get("Generations"));
-        private static double starting_temp = double.Parse(ConfigurationManager.AppSettings.Get("Temperature_start"));
-        private static double scaling_temp = double.Parse(ConfigurationManager.AppSettings.Get("Temperature_scaling"));
         private static Random random = new Random();
 
-        public static void SimulatedAnnealingSearch(Individual ind, out double[][] results, bool useInverse = true)
+        public static void SimulatedAnnealingSearch(Individual ind, out double[][] results, int generations, int neihgbors_size, double starting_temp, double scaling_value)
         {
             results = new double[generations][];
             double temperature = starting_temp;
             Individual best_global = ind;
             Individual best_local = ind;
             int current_gen = 0;
+            results[current_gen] = new double[3] { best_global.fitness, best_local.fitness, best_local.fitness };
+            //Console.WriteLine(string.Join(",", results[current_gen]));
+            current_gen++;
 
             while (current_gen < generations)
             {
-                Individual[] neighbours = TSPTabuSeach.getNeighbours(best_local, useInverse);
+                Individual[] neighbours = TSPTabuSeach.getNeighbours(best_local, neihgbors_size, true);
 
                 foreach (Individual neighbour in neighbours)
                 {
-                    //Console.WriteLine(neighbour.fitness);
                     if (neighbour.fitness > best_local.fitness)
                     {
                         best_local = neighbour;
@@ -43,8 +42,9 @@ namespace MetaProject.Problem
                     best_global = best_local;
                 }
 
-                temperature *= scaling_temp;
-                results[current_gen] = new double[4] { best_global.fitness, best_local.fitness, neighbours.Select(i => i.fitness).Average(), neighbours.Select(i => i.fitness).Min() };
+                temperature *= scaling_value;
+                results[current_gen] = new double[3] { best_global.fitness, best_local.fitness, neighbours.Select(i => i.fitness).Min() };
+                //Console.WriteLine(string.Join(",", results[current_gen]));
                 current_gen++;
             }
         }

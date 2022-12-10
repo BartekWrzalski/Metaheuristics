@@ -1,0 +1,24 @@
+2. 2 oddzielne EA wymieniają się co x (np. 10) pokoleń n% (np. 15%) populacji z 
+usunięciem elitarnych osobników z obu (wymiana najlepszych, podsięgnięcie w górę
+2 EA i sprowadzenie w dół, aby wyjść z lokalnych optimów w 1)
+
+
+generacje
+populacja
+selekcja, rozmiar turnieju,
+krzyżowanie, % krzyżowania
+mutacja, procent mutacji
+ile migrantów (elitarni + procent reszty)
+co ile pokoleń (ile do pominięcia)
+
+tabu:
+5 ea
+co ile,
+sąsiędztwo,
+tabu
+
+2 mutacje
+fizyczne - kopia
+
+6.5 s
+938.26 s

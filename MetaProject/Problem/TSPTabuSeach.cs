@@ -9,12 +9,9 @@ namespace MetaProject.Problem
 {
     internal class TSPTabuSeach
     {
-        private static int generations = int.Parse(ConfigurationManager.AppSettings.Get("Generations"));
-        private static int neihgbors_size = int.Parse(ConfigurationManager.AppSettings.Get("Neighbour_size"));
-        private static int tabu_size = int.Parse(ConfigurationManager.AppSettings.Get("Tabu_size"));
         private static Random random = new Random();
 
-        public static void TabuSearchTabuBest(Individual ind, out double[][] results, bool useInverse = true)
+        public static void TabuSearchTabuBest(Individual ind, out double[][] results, int generations, int neihgbors_size, int tabu_size)
         {
             results = new double[generations][];
             Individual best_global = ind;
@@ -22,10 +19,16 @@ namespace MetaProject.Problem
             List<Individual> TabuList = new List<Individual>(tabu_size);
             TabuList.Add(ind);
             int current_gen = 0;
+            results[current_gen] = new double[3] { best_global.fitness, best_local.fitness, best_local.fitness };
+            //Console.WriteLine(string.Join(",", results[current_gen]));
+            current_gen++;
 
             while (current_gen < generations)
             {
-                Individual[] neighbours = getNeighbours(best_local, useInverse);
+                //best_local.print_cities_id();
+                //Console.WriteLine(best_local.fitness);
+
+                Individual[] neighbours = getNeighbours(best_local, neihgbors_size, true);
                 best_local = neighbours[0];
                 foreach (Individual neighbour in neighbours)
                 {
@@ -46,15 +49,17 @@ namespace MetaProject.Problem
                 }
                 TabuList.Add(best_local);
 
-                results[current_gen] = new double[4] { best_global.fitness, best_local.fitness, neighbours.Select(i => i.fitness).Average(), neighbours.Select(i => i.fitness).Min() };
+                results[current_gen] = new double[3] { best_global.fitness, best_local.fitness, neighbours.Select(i => i.fitness).Min() };
+                //Console.WriteLine(string.Join(",", results[current_gen]));
                 current_gen += 1;
             }
 
         }
 
-        public static void TabuSearchTabuAll(Individual ind, out double[][] results, bool useInverse = true)
+        public static void TabuSearchTabuAll(Individual ind, out double[][] results, int generations, int neihgbors_size, int tabu_size)
         {
-            results = new double[generations][]; 
+            results = new double[generations][];
+
             Individual best_global = ind;
             Individual best_local = ind;
             List<Individual> TabuList = new List<Individual>(tabu_size + 1);
@@ -64,7 +69,7 @@ namespace MetaProject.Problem
             while (current_gen < generations)
             {
 
-                Individual[] neighbours = getNeighbours(best_local, useInverse);
+                Individual[] neighbours = getNeighbours(best_local, neihgbors_size, true);
                 best_local = neighbours[0];
                 foreach (Individual neighbour in neighbours)
                 {
@@ -91,7 +96,7 @@ namespace MetaProject.Problem
 
         }
 
-        public static Individual[] getNeighbours(Individual best_local, bool useInverse = true)
+        public static Individual[] getNeighbours(Individual best_local, int neihgbors_size, bool useInverse = true)
         {
             Individual[] neighbours = new Individual[neihgbors_size];
             if (useInverse)

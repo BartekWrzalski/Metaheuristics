@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MetaProject.Problem
 {
@@ -41,6 +42,13 @@ namespace MetaProject.Problem
             return population.Select(i => i.fitness).Average();
         }
 
+        public double GetStd()
+        {
+            double[] fitnesses = population.Select(i => i.fitness).ToArray();
+            double avg = GetAvgInd();
+            return Math.Sqrt(fitnesses.Average(f => Math.Pow(f - avg, 2)));
+        }
+
         public void print_best()
         {
             Individual ind = population.Where(i => i.fitness == GetBestInd()).Select(i => i).First();
@@ -58,6 +66,10 @@ namespace MetaProject.Problem
                 ind.print_cities_id();
                 ind.print_items_id();
             }
+        }
+        public void orderPopulation()
+        {
+            Array.Sort(population, (x, y) => y.fitness.CompareTo(x.fitness));
         }
     }
 }

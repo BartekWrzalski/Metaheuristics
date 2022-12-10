@@ -91,6 +91,7 @@
     <Compile Include="Problem\ProblemData.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="4Results\vis_4.csv" />
     <None Include="App.config" />
     <None Include="Data\easy_0.ttp" />
     <None Include="Data\easy_1.ttp" />
@@ -113,13 +114,38 @@
     <None Include="Results\visualisation.csv" />
     <None Include="Results\visualisation_aneealing.xlsx" />
     <None Include="Results\visualisation_tabu.xlsx" />
-    <None Include="Saved results\ind.json" />
-    <None Include="Saved results\pop.json" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="HybridResult\" />
     <Folder Include="Logs\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="4Results\genetic_easy_4__base.txt" />
+    <Content Include="4Results\genetic_hard_4__base.txt" />
+    <Content Include="4Results\genetic_medium_0__base.txt" />
+    <Content Include="4Results\genetic_medium_2__base.txt" />
+    <Content Include="4Results\genetic_medium_4__base.txt" />
+    <Content Include="4Results\greedy_easy_4.txt" />
+    <Content Include="4Results\greedy_hard_4.txt" />
+    <Content Include="4Results\greedy_medium_0.txt" />
+    <Content Include="4Results\greedy_medium_2.txt" />
+    <Content Include="4Results\greedy_medium_4.txt" />
+    <Content Include="4Results\random_easy_4.txt" />
+    <Content Include="4Results\random_hard_4.txt" />
+    <Content Include="4Results\random_medium_0.txt" />
+    <Content Include="4Results\random_medium_2.txt" />
+    <Content Include="4Results\random_medium_4.txt" />
+    <Content Include="4Results\simann_easy_4__base.txt" />
+    <Content Include="4Results\simann_hard_4__base.txt" />
+    <Content Include="4Results\simann_medium_0__base.txt" />
+    <Content Include="4Results\simann_medium_2__base.txt" />
+    <Content Include="4Results\simann_medium_4__base.txt" />
+    <Content Include="4Results\tabu_easy_4__base.txt" />
+    <Content Include="4Results\tabu_hard_4__base.txt" />
+    <Content Include="4Results\tabu_medium_0__base.txt" />
+    <Content Include="4Results\tabu_medium_2__base.txt" />
+    <Content Include="4Results\tabu_medium_4__base.txt" />
+    <Content Include="4Results\times.txt" />
     <Content Include="Results\genetic_easy_0_.txt" />
     <Content Include="Results\genetic_easy_0_crossover_ox.txt" />
     <Content Include="Results\genetic_easy_0_crossover_ox_rate_05.txt" />
@@ -151,6 +177,12 @@
     <Content Include="Results\random_easy_2.txt" />
     <Content Include="Results\random_easy_3.txt" />
     <Content Include="Results\random_easy_4.txt" />
+    <Content Include="Results\simann_hard_4_10k_20k_99945.txt" />
+    <Content Include="Results\simann_hard_4_10k_30k_99945.txt" />
+    <Content Include="Results\simann_hard_4_10k_30k_9997.txt" />
+    <Content Include="Results\simann_hard_4_10k_50k_99945.txt" />
+    <Content Include="Results\simann_hard_4_10k_50k_9997.txt" />
+    <Content Include="Results\simann_hard_4_20k_50k_9997.txt" />
     <Content Include="Results\simann_hard_4_20k_gen_50k_9997.txt" />
     <Content Include="Results\simann_hard_4_20k_gen_greedy_50k_9997.txt" />
     <Content Include="Results\simann_hard_4_inverse_20k_99945.txt" />

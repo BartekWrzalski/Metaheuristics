@@ -8,23 +8,54 @@ namespace MetaProject.Problem
     internal class TSPGenetic
     {
         public static ProblemData data { get; set; }
-        private static int population_size = int.Parse(ConfigurationManager.AppSettings.Get("Population"));
-        private static int generations = int.Parse(ConfigurationManager.AppSettings.Get("Generations"));
-        private static int tour_size = int.Parse(ConfigurationManager.AppSettings.Get("Tour_size_per")) * population_size / 100;
-        private static int roulette_power = int.Parse(ConfigurationManager.AppSettings.Get("Roulette_power"));
-        private static double crossover_rate = double.Parse(ConfigurationManager.AppSettings.Get("Crossover_rate"));
-        private static double mutation_rate_inverse = double.Parse(ConfigurationManager.AppSettings.Get("Mutation_rate_inverse"));
-        private static double mutation_rate_swap = double.Parse(ConfigurationManager.AppSettings.Get("Mutation_rate_swap"));
+        private static int population_size;
+        private static int generations;
+        private static int tour_size;
+        private static int roulette_power;
+        private static double crossover_rate;
+        private static double mutation_rate_inverse;
+        private static double mutation_rate_swap;
         private static Random random = new Random();
 
-        public static Population GANextPopulation(Population population, out double[][] results, 
-            bool useTournament = true, 
-            bool use_ox_crossover = true, 
-            bool use_inverse_mutation = true)
+        public static Population GANextPopulation(Population population, ref List<(double, double)> results, 
+            int _population_size,
+            int _generations,
+            bool useTournament,
+            int tournament_size_or_roulette_power,
+            bool use_ox_crossover,
+            double _crossover_rate,
+            bool use_inverse_mutation,
+            double _mutation_rate
+            )
         {
-            results = new double[generations][];
-            results[0] = new double[2] { population.GetBestInd(), population.GetWorstInd() };
-            for (int i = 1; i < generations; i++)
+
+            population_size = _population_size;
+            generations = _generations;
+
+            //results.Add((population.GetBestInd(), population.GetWorstInd()));
+            //Console.WriteLine(string.Join(",", results[0]));
+
+            if (useTournament)
+            {
+                tour_size = tournament_size_or_roulette_power * population_size / 100;
+            }
+            else
+            {
+                roulette_power = tournament_size_or_roulette_power;
+            }
+
+            crossover_rate = _crossover_rate;
+
+            if (use_inverse_mutation)
+            {
+                mutation_rate_inverse = _mutation_rate;
+            }
+            else
+            {
+                mutation_rate_swap = _mutation_rate;
+            }
+
+            for (int i = 0; i < generations; i++)
             {
                 Individual[] selected;
 
@@ -49,14 +80,14 @@ namespace MetaProject.Problem
                 if (use_inverse_mutation)
                 {
                     inverse_mutation(population);
-
                 }
                 else
                 {
                     swap_mutation(population);
                 }
-                
-                results[i] = new double[2] { population.GetBestInd(), population.GetWorstInd() };
+
+                results.Add((population.GetBestInd(), population.GetWorstInd()));
+                //Console.WriteLine(string.Join(",", results[i]));
             }
             return population;
         }
